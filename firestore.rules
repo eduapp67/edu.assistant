@@ -5,12 +5,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId}/data/{docId} {
-      allow read, delete: if request.auth != null && request.auth.uid == userId;
-      allow create, update: if request.auth != null
-                            && request.auth.uid == userId
-                            && request.resource.data.keys().hasOnly(['v', 't', 'deleted']);
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    // Mọi đường dẫn khác: chặn
     match /{document=**} {
       allow read, write: if false;
     }

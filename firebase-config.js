@@ -1,21 +1,13 @@
 /* ============================================================
-   CẤU HÌNH FIREBASE — điền thông tin dự án Firebase của bạn
-   ------------------------------------------------------------
-   Lấy ở: Firebase Console → Project settings → Your apps → Web app
-   → mục "SDK setup and configuration" → chọn "Config".
-
-   Đoạn cấu hình web của Firebase KHÔNG phải mật khẩu — nó được
-   thiết kế để công khai. Dữ liệu được bảo vệ bởi Firestore Rules
-   (file firestore.rules), nên đưa file này lên GitHub là bình thường.
-
-   Để trống (giữ nguyên "YOUR_...") → app chạy chế độ
-   "chỉ lưu trên máy này", không cần đăng nhập.
+   CẤU HÌNH FIREBASE — dự án edu-assistant-960eb
+   Đoạn cấu hình web của Firebase KHÔNG phải mật khẩu, được thiết kế
+   để công khai. Dữ liệu được bảo vệ bởi Firestore Rules (firestore.rules).
 ============================================================ */
 window.EDU_FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCdsP99VE59htMi5r54mRf3su-FBp6Zev8",
+  authDomain: "edu-assistant-960eb.firebaseapp.com",
+  projectId: "edu-assistant-960eb",
+  storageBucket: "edu-assistant-960eb.firebasestorage.app",
+  messagingSenderId: "504641387727",
+  appId: "1:504641387727:web:604f3b1c04d046b8278bba"
 };
