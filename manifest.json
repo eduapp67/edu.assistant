@@ -1,0 +1,17 @@
+{
+  "name": "EDU ASSISTANT — Sổ tay giáo viên",
+  "short_name": "EDU ASSISTANT",
+  "description": "Quản lý lớp học, ghi nhận buổi học, báo cáo phụ huynh và theo dõi tiến độ học sinh.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1B2A4A",
+  "theme_color": "#1B2A4A",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

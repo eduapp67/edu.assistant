@@ -1,0 +1,18 @@
+rules_version = '2';
+
+// EDU ASSISTANT — mỗi giáo viên chỉ đọc/ghi được dữ liệu của chính mình.
+// Dữ liệu nằm ở: users/{uid}/data/{key}
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/data/{docId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+                            && request.auth.uid == userId
+                            && request.resource.data.keys().hasOnly(['v', 't', 'deleted']);
+    }
+    // Mọi đường dẫn khác: chặn
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
