@@ -10,7 +10,7 @@
    - Chưa điền firebase-config.js → app chạy chế độ "chỉ trên máy này".
 ============================================================ */
 const APP_NAME = 'EDU ASSISTANT';
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.0.1';
 const LOGIN_EMAIL_DOMAIN = 'edu-assistant.app'; // ID không có @ sẽ được ghép thành id@edu-assistant.app
 
 /* ============================================================
@@ -197,6 +197,7 @@ const state = {
   teacherName: '',
   // đăng nhập
   authReady:false,
+  setupIssue:null,   // 'no-config' | 'no-sdk'
   user:null,
   authMode:'login',   // 'login' | 'register'
   authBusy:false,
@@ -2385,6 +2386,7 @@ function render(){
     app.innerHTML = `<div class="boot">${brandMark()}<div>Đang mở ${APP_NAME}…</div></div>`;
     return;
   }
+  if(state.setupIssue){ app.innerHTML = renderSetupIssue(); attachSetupHandlers(); return; }
   if(cloudEnabled() && !state.user){ app.innerHTML = renderLogin(); attachAuthHandlers(); return; }
   if(!state.loaded){
     app.innerHTML = `<div class="boot">${brandMark()}<div>Đang tải dữ liệu lớp học…</div></div>`;
@@ -2597,6 +2599,46 @@ function changePassword(){
 }
 
 /* ============================================================
+   MÀN HÌNH BÁO THIẾU CẤU HÌNH / KHÔNG TẢI ĐƯỢC FIREBASE
+   (thay vì lặng lẽ vào chế độ chỉ lưu trên máy)
+============================================================ */
+const LOCAL_MODE_FLAG = 'eduassistant:allowLocalMode';
+function localModeAllowed(){ try{ return localStorage.getItem(LOCAL_MODE_FLAG)==='1'; }catch(e){ return false; } }
+
+function renderSetupIssue(){
+  const noConfig = state.setupIssue === 'no-config';
+  return `
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-brand">${brandMark()}<div><div class="brand-name">EDU ASSISTANT</div><div class="brand-sub">Sổ tay giáo viên</div></div></div>
+      ${noConfig ? `
+        <h2>Chưa kết nối tài khoản</h2>
+        <p class="muted" style="margin:6px 0 14px;line-height:1.6;">Trang này chưa được điền cấu hình Firebase nên chưa đăng nhập được.</p>
+        <div class="notice" style="margin-bottom:16px;">
+          <b>Người quản lý trang:</b> mở file <code>firebase-config.js</code> trên GitHub, thay các giá trị <code>YOUR_...</code> bằng cấu hình dự án Firebase (xem README, mục 1–2), rồi đợi 1–2 phút và tải lại trang.
+        </div>
+        <button class="btn btn-outline auth-submit" id="use-local">Dùng tạm — chỉ lưu trên máy này</button>
+        <div class="tiny" style="margin-top:10px;line-height:1.6;">Chế độ tạm không có đăng nhập và không đồng bộ sang máy khác. Dữ liệu vẫn chuyển được sau này bằng file sao lưu.</div>
+      ` : `
+        <h2>Không tải được hệ thống đăng nhập</h2>
+        <p class="muted" style="margin:6px 0 14px;line-height:1.6;">Trình duyệt chưa tải được thư viện Firebase — thường do mất mạng hoặc mạng trường chặn <code>gstatic.com</code>.</p>
+        <button class="btn btn-accent auth-submit" id="retry-load">↻ Thử lại</button>
+      `}
+    </div>
+  </div>`;
+}
+function attachSetupHandlers(){
+  const local = document.getElementById('use-local');
+  if(local) local.addEventListener('click', ()=>{
+    try{ localStorage.setItem(LOCAL_MODE_FLAG,'1'); }catch(e){}
+    state.setupIssue = null;
+    startSession(null);
+  });
+  const retry = document.getElementById('retry-load');
+  if(retry) retry.addEventListener('click', ()=> location.reload());
+}
+
+/* ============================================================
    KHỞI ĐỘNG
 ============================================================ */
 async function startSession(user){
@@ -2619,7 +2661,16 @@ async function startSession(user){
     });
   } else {
     state.authReady = true;
-    startSession(null);
+    if(FIREBASE_CONFIG){
+      // Đã điền cấu hình nhưng không tải được thư viện Firebase → báo lỗi, KHÔNG vào chế độ máy này (tránh dữ liệu bị tách đôi)
+      state.setupIssue = 'no-sdk';
+      render();
+    } else if(!localModeAllowed()){
+      state.setupIssue = 'no-config';
+      render();
+    } else {
+      startSession(null);
+    }
   }
 })();
 

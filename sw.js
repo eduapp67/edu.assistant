@@ -9,7 +9,7 @@
      Firebase tự đệm và tự đồng bộ.
    Khi sửa app: tăng CACHE_VERSION để máy người dùng nhận bản mới.
 ============================================================ */
-const CACHE_VERSION = 'edu-assistant-v1.0.0';
+const CACHE_VERSION = 'edu-assistant-v1.0.1';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
